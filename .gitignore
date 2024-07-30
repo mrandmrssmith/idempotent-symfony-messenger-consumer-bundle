@@ -1,0 +1,11 @@
+# IDE
+.idea
+
+# Code tools
+.phpunit.result.cache
+coverage/
+
+# Composer
+vendor/
+composer.lock
+.env

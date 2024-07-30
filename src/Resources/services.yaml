@@ -1,0 +1,6 @@
+services:
+    MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\:
+        resource: '../'
+        autowire: true
+        autoconfigure: true
+        public: true

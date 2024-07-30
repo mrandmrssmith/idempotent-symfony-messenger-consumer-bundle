@@ -1,0 +1,122 @@
+#!/bin/bash
+echo "Running pre commit checks..."
+
+IMAGE_NAME=smithsfjs-php-cli
+
+make build72
+
+make composer-install
+
+PROJECT=`docker run --volume $(pwd):/var/www/html $IMAGE_NAME php -r "echo realpath(__DIR__);"`
+STAGED_FILES_CMD=`git diff --cached --name-only --diff-filter=ACMR HEAD | egrep '\.php$'`
+
+# Determine if a file list is passed
+if [ "$#" -eq 1 ]
+then
+	oIFS=$IFS
+	IFS='
+	'
+	SFILES="$1"
+	IFS=$oIFS
+fi
+SFILES=${SFILES:-$STAGED_FILES_CMD}
+
+echo "Checking PHP Lint..."
+for FILE in $SFILES
+do
+	docker run --volume $(pwd):/var/www/html $IMAGE_NAME php -l -d display_errors=0 $PROJECT/${FILE/app}
+	if [ $? != 0 ]
+	then
+		echo "Fix the error before commit."
+		exit 1
+	fi
+	FILES="$FILES $PROJECT/${FILE/app}"
+done
+
+echo "Checking for left over debugging code..."
+debugCommands[1]='die('
+debugCommands[2]='die;'
+debugCommands[3]='print_r('
+debugCommands[4]='var_dump('
+debugCommands[5]='dump('
+debugCommands[6]='console.log('
+elements=${#debugCommands[@]}
+
+(( "elements = $elements + 1" ))
+for FILE in $SFILES
+do
+ EXTENSION=$(echo "$FILE" | grep ".php$")
+ if [ "$EXTENSION" != "" ]; then
+     index=1
+     while [ "$index" -lt "$elements" ]
+     do
+         ERRORS=$(grep "${debugCommands[$index]}" "$FILE" >&1)
+             if [ "$ERRORS" != "" ]; then
+                 if [ "$ERRORS_BUFFER" != "" ]; then
+                     ERRORS_BUFFER="$ERRORS_BUFFER\n$FILE: $ERRORS"
+                 else
+                     ERRORS_BUFFER="$FILE: $ERRORS"
+                 fi
+             fi
+             (( "index = $index + 1" ))
+     done
+ fi
+done
+if [ "$ERRORS_BUFFER" != "" ]; then
+ echo
+ echo "These errors were found in git staged files: "
+ echo "$ERRORS_BUFFER"
+ echo
+ echo "Can't commit, fix issues please."
+ exit 1
+else
+ echo "No debugging lines found..."
+fi
+
+echo "Running phpstan..."
+echo
+make phpstan
+
+if [ $? != 0 ]
+then
+    echo "--------------------------WARNING----------------------------------------------"
+    echo "Committed code breaks 'phpstan' tests, please fix them!"
+    echo "-------------------------------------------------------------------------------"
+    exit 1
+fi
+
+echo "Running psalm..."
+echo
+make psalm
+
+if [ $? != 0 ]
+then
+    echo "--------------------------WARNING----------------------------------------------"
+    echo "Committed code breaks 'psalm' tests, please fix them!"
+    echo "-------------------------------------------------------------------------------"
+    exit 1
+fi
+
+echo "Running ECS..."
+echo
+make ecs-check
+
+if [ $? != 0 ]
+then
+    echo "--------------------------WARNING----------------------------------------------"
+    echo "Committed code breaks 'ECS' tests, please fix them!"
+    echo "-------------------------------------------------------------------------------"
+    exit 1
+fi
+
+echo "Running phpunit..."
+echo
+make tests-php7
+
+if [ $? != 0 ]
+then
+    echo "--------------------------WARNING----------------------------------------------"
+    echo "Committed code breaks 'phpunit' tests, please fix them!"
+    echo "-------------------------------------------------------------------------------"
+    exit 1
+fi

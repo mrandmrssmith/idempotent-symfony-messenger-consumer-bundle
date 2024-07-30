@@ -1,0 +1,17 @@
+parameters:
+    level: 6
+    paths:
+        - ./Serializer
+        - ./Tests
+    excludePaths:
+        - ./vendor/*
+    ignoreErrors:
+        - '#serializer of class MrAndMrsSmith\\SymfonyMessengerJSONSerializer\\Serializer\\MessengerJSONSerializer constructor expects Symfony\\Component\\Serializer\\SerializerInterface, PHPUnit\\Framework\\MockObject\\MockObject given.#'
+    tipsOfTheDay: false
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    treatPhpDocTypesAsCertain: false
+
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
