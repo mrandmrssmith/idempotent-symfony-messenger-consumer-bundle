@@ -19,9 +19,9 @@ RUN apk update && apk add --no-cache zip bash curl git libxml2-dev linux-headers
     && apk del bash pcre-dev ${PHPIZE_DEPS} \
     && docker-php-ext-enable xdebug
 
-#RUN curl -sS https://getcomposer.org/installer | php \
-#    && mv composer.phar /usr/local/bin/composer \
-#    && composer config --global repo.packagist composer https://packagist.org
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
+    && composer config --global repo.packagist composer https://packagist.org
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 

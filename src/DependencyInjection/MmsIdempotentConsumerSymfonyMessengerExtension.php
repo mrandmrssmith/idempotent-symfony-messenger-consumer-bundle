@@ -13,7 +13,7 @@ final class MmsIdempotentConsumerSymfonyMessengerExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
+        $this->processConfiguration($configuration, $configs);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources'));
         $loader->load('services.yaml');

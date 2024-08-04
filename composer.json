@@ -1,25 +1,26 @@
 {
-    "name": "mrandmrssmith/idempotent-consumer-bundle",
+    "name": "mrandmrssmith/idempotent-symfony-messenger-consumer-bundle",
     "description": "idempotent-consumer-bundle",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=7.2",
         "ext-json": "*",
-        "symfony/messenger": ">=3.4",
-        "symfony/serializer": ">=3.4",
-        "symfony/property-access": ">=3.4"
+        "symfony/messenger": ">=4.4",
+        "symfony/serializer": ">=4.4",
+        "symfony/property-access": ">=4.4",
+        "symfony/symfony": ">=4.4",
+        "mrandmrssmith/idempotent-consumer-bundle": "dev-main"
     },
     "authors": [
         {
             "name": "Michal Boryczko",
             "email": "michal.boryczko@smithhotels.com"
-        },
-
+        }
     ],
     "autoload": {
         "psr-4": {
-            "MrAndMrsSmith\\IdempotentConsumerBundle\\": "/src"
+            "MrAndMrsSmith\\IdempotentConsumerSymfonyMessengerBundle\\": "/src"
         }
     },
     "config": {
@@ -33,5 +34,11 @@
         "roave/security-advisories": "dev-master",
         "symplify/easy-coding-standard": "^12.1",
         "vimeo/psalm": "^4.30||^5.22"
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/mrandmrssmith/idempotent-consumer-bundle.git"
+        }
+    ]
 }

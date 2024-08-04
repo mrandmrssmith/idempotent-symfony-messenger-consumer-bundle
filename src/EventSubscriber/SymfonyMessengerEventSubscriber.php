@@ -8,30 +8,61 @@ use MrAndMrsSmith\IdempotentConsumerBundle\Message\IncomingMessage;
 use MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Factory\IncomingMessageFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 
 class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var CheckMessageCanBeProcessed
+     */
     private $checker;
 
+    /**
+     * @var IncomingMessageFactory
+     */
     private $incomingMessageFactory;
 
+    /**
+     * @var MessageFinalizer
+     */
     private $finalizer;
 
+    /**
+     * @var string[]
+     */
+    private $supportedTransports = [];
+
+    /**
+     * @var string[]
+     */
+    private $supportedMessages = [];
+
+    /**
+     * @param string[] $supportedTransports
+     * @param string[] $supportedMessages
+     */
     public function __construct(
         CheckMessageCanBeProcessed $checker,
         IncomingMessageFactory $incomingMessageFactory,
-        MessageFinalizer $finalizer
+        MessageFinalizer $finalizer,
+        array $supportedTransports = [],
+        array $supportedMessages = []
     ) {
         $this->checker = $checker;
         $this->incomingMessageFactory = $incomingMessageFactory;
         $this->finalizer = $finalizer;
+        $this->supportedTransports = $supportedTransports;
+        $this->supportedMessages = $supportedMessages;
     }
 
     public function checkIfCanProcessMessage(WorkerMessageReceivedEvent $event): void
     {
+        if (!$this->messageShouldBeChecked($event)) {
+            return;
+        }
         $incomingMessage = $this->getIncomingMessageFromEnvelope($event->getEnvelope());
 
         $event->shouldHandle($this->checker->check($incomingMessage));
@@ -39,6 +70,9 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
 
     public function handleMessageHandledEvent(WorkerMessageHandledEvent $event): void
     {
+        if (!$this->messageShouldBeChecked($event)) {
+            return;
+        }
         $incomingMessage = $this->getIncomingMessageFromEnvelope($event->getEnvelope());
 
         $this->finalizer->finalizeSuccess($incomingMessage);
@@ -46,6 +80,10 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
 
     public function handleMessageFailedEvent(WorkerMessageFailedEvent $event): void
     {
+        if (!$this->messageShouldBeChecked($event)) {
+            return;
+        }
+
         if ($event->willRetry()) {
             return;
         }
@@ -77,5 +115,24 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
         return $this
             ->incomingMessageFactory
             ->createFromMessengerMessageEnvelope($envelope);
+    }
+
+    private function messageShouldBeChecked(AbstractWorkerMessageEvent $event): bool
+    {
+        if (empty($this->supportedTransports) && empty($this->supportedMessages)) {
+            return true;
+        }
+
+        if (in_array($event->getReceiverName(), $this->supportedTransports)) {
+            return true;
+        }
+
+        foreach ($this->supportedMessages as $supportedMessage) {
+            if ($event->getEnvelope()->getMessage() instanceof $supportedMessage) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

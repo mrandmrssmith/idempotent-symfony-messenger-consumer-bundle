@@ -1,6 +1,17 @@
+parameters:
+    mms.idempotent_consumer.messenger_bundle.supported_messages: []
+    mms.idempotent_consumer.messenger_bundle.supported_transports: []
+
 services:
     MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\:
         resource: '../'
         autowire: true
         autoconfigure: true
         public: true
+
+    MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\EventSubscriber\SymfonyMessengerEventSubscriber:
+        autoconfigure: true
+        autowire: true
+        arguments:
+            $supportedTransports: '%mms.idempotent_consumer.messenger_bundle.supported_transports%'
+            $supportedMessages: '%mms.idempotent_consumer.messenger_bundle.supported_messages%'

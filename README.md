@@ -1,60 +1,42 @@
-# Symfony Messenger JSON Serializer
+# Symfony Messenger idempotent consumer bundle
 
-A JSON serializer for external messages from Symfony Messenger.
-This will allow you to have one single JSON serializer for all your external message. You only need to register the service, alias it and mention which message you would like to be deserialized.
+Bundle for symfony messenger which provide functionality to make your consumer idempotent.
+
+It based on `mrandmrssmith/idempotent-consumer-bundle` and provide integration with symfony messenger.
+
+You can you package `mrandmrssmith/idempotent-consumer-doctrine-persistence-bundle` to provide persistence layer using doctrine.
+
+It uses messenger events to handle incoming and processed or failed messages.
 
 ## Installation
 
 Add this package to your project
 ```shell
-composer require mrandmrssmith/symfony-messenger-json-serializer
+composer require mrandmrssmith/idempotent-symfony-messenger-consumer-bundle
 ```
 
 ## Usage
-1. Configure Messenger
+By default it will try check for all messages.
+
+If you want, you can restrict the action so that it checks only messages from a particular transport or messages that are instances of a class/interface
+
+To do this you need overwrite value of some parameters.
+1. Configure supported messages
 ```yaml
-framework:
-    messenger:
-        transports:
-            external:
-                dsn: '%env(MESSENGER_DSN)%'
-                serializer: external_message.messenger.serializer
-
-        routing:
-             'MrAndMrsSmith\Queue\ExternalMessage': external
+parameters:
+    mms.idempotent_consumer.messenger_bundle.supported_messages:
+        - "App\Message\MyMessage"
+        - "App\Message\MyMessageInterface"
 ```
-2. Configure your serializer
+2. Configure supported transports
 ```yaml
-  external_message.messenger.serializer:
-    class: MrAndMrsSmith\SymfonyMessengerJSONSerializer\Serializer\MessengerJSONSerializer
-    factory: [MrAndMrsSmith\SymfonyMessengerJSONSerializer\Serializer\MessengerJSONSerializerFactory, 'create']
-    arguments:
-      $serializer: '@serializer'
-      $messageClassResolver:  MrAndMrsSmith\Queue\ExternalMessage    
-
-```
-That will create a serializer with default resolver which will use the message class name to deserialize the message.
-But you can create your own resolver and pass it to the serializer. Your resolver should implement `MessageClassResolver` and you can implement your own logic to resolve class name base on data in message for example get event name from header
-```php
-class MyMessageClassResolver implements MessageClassResolver
-{
-    public function resolveClass(array $encodedEnvelope): string;
-    {
-      // your logic to resolve class name
-    }
-}
-```
-```yaml
-  external_message.messenger.serializer:
-    class: MrAndMrsSmith\SymfonyMessengerJSONSerializer\Serializer\MessengerJSONSerializer
-    arguments:
-      $serializer: '@serializer'
-      $messageClassResolver: '@my_message_class_resolver'    
-
-  my_message_class_resolver:
-    class: MyMessageClassResolver
+parameters:
+    mms.idempotent_consumer.messenger_bundle.supported_transports:
+        - 'my_transport_name'
+        - 'other_transport_name'
 ```
 
+if you configure both in first order it will check transport then message.
 
 ## Support
 

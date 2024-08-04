@@ -9,6 +9,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class IncomingMessageFactory
 {
+    /**
+     * @var SerializerInterface
+     */
     private $serializer;
 
     public function __construct(SerializerInterface $serializer)
