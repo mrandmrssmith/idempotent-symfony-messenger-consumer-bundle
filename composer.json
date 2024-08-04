@@ -9,7 +9,6 @@
         "symfony/messenger": ">=4.4",
         "symfony/serializer": ">=4.4",
         "symfony/property-access": ">=4.4",
-        "symfony/symfony": ">=4.4",
         "mrandmrssmith/idempotent-consumer-bundle": "dev-main"
     },
     "authors": [
@@ -26,7 +25,7 @@
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require-dev": {
         "phpstan/phpstan": "^1.10",
         "phpstan/phpstan-phpunit": "^1.3",
