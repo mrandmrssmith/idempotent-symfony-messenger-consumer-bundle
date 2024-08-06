@@ -15,29 +15,19 @@ use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 
 class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CheckMessageCanBeProcessed
-     */
+    /** @var CheckMessageCanBeProcessed */
     private $checker;
 
-    /**
-     * @var IncomingMessageFactory
-     */
+    /** @var IncomingMessageFactory */
     private $incomingMessageFactory;
 
-    /**
-     * @var MessageFinalizer
-     */
+    /** @var MessageFinalizer */
     private $finalizer;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $supportedTransports = [];
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $supportedMessages = [];
 
     /**

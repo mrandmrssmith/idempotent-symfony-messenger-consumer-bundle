@@ -16,6 +16,8 @@ composer require mrandmrssmith/idempotent-symfony-messenger-consumer-bundle
 ```
 
 ## Usage
+You have to remember about implement IdempotentKeyResolver. Interface is in core bundle `mrandmrssmith/idempotent-consumer-bundle`
+
 By default it will try check for all messages.
 
 If you want, you can restrict the action so that it checks only messages from a particular transport or messages that are instances of a class/interface
