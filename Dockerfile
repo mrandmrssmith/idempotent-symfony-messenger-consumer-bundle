@@ -2,8 +2,6 @@ ARG BASE_IMAGE=php:7.2-cli-alpine3.12
 
 FROM ${BASE_IMAGE}
 
-LABEL maintainer="Jack Wilson <jack.wilson@smithhotels.com>"
-
 RUN mkdir -p /var/www/html
 
 WORKDIR /var/www/html
