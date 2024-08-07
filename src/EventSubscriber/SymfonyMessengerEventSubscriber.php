@@ -73,11 +73,12 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
         if (!$this->messageShouldBeChecked($event)) {
             return;
         }
+        $incomingMessage = $this->getIncomingMessageFromEnvelope($event->getEnvelope());
 
         if ($event->willRetry()) {
+            $this->finalizer->markAsRetry($incomingMessage);
             return;
         }
-        $incomingMessage = $this->getIncomingMessageFromEnvelope($event->getEnvelope());
 
         $this->finalizer->finalizeFailure($incomingMessage);
     }
