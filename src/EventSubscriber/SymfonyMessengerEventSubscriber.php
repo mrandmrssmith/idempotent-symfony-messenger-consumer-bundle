@@ -35,8 +35,6 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
     /** @var string[] */
     private $supportedMessages = [];
 
-    private $messageBus;
-
     /**
      * @param string[] $supportedTransports
      * @param string[] $supportedMessages
