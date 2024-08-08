@@ -8,10 +8,14 @@ services:
         autowire: true
         autoconfigure: true
         public: true
+        exclude:
+            - '../EventSubscriber/*'
 
-    MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\EventSubscriber\SymfonyMessengerEventSubscriber:
+    mms.idempotent_consumer.messenger_bundle.event_subscriber:
+        class: MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\EventSubscriber\SymfonyMessengerEventSubscriber
         autoconfigure: true
         autowire: true
         arguments:
+            $receivers: []
             $supportedTransports: '%mms.idempotent_consumer.messenger_bundle.supported_transports%'
             $supportedMessages: '%mms.idempotent_consumer.messenger_bundle.supported_messages%'

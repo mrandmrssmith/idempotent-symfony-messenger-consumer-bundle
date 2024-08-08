@@ -12,6 +12,8 @@ use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
+use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
 
 class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
 {
@@ -24,11 +26,16 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
     /** @var MessageFinalizer */
     private $finalizer;
 
+    /** @var ReceiverInterface[] */
+    private $receivers;
+
     /** @var string[] */
     private $supportedTransports = [];
 
     /** @var string[] */
     private $supportedMessages = [];
+
+    private $messageBus;
 
     /**
      * @param string[] $supportedTransports
@@ -38,12 +45,14 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
         CheckMessageCanBeProcessed $checker,
         IncomingMessageFactory $incomingMessageFactory,
         MessageFinalizer $finalizer,
+        array $receivers,
         array $supportedTransports = [],
         array $supportedMessages = []
     ) {
         $this->checker = $checker;
         $this->incomingMessageFactory = $incomingMessageFactory;
         $this->finalizer = $finalizer;
+        $this->receivers = $receivers;
         $this->supportedTransports = $supportedTransports;
         $this->supportedMessages = $supportedMessages;
     }
@@ -56,6 +65,10 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
         $incomingMessage = $this->getIncomingMessageFromEnvelope($event->getEnvelope());
 
         $event->shouldHandle($this->checker->check($incomingMessage));
+        if ($event->shouldHandle()) {
+            return;
+        }
+        $this->receivers[$event->getReceiverName()]->ack($event->getEnvelope());
     }
 
     public function handleMessageHandledEvent(WorkerMessageHandledEvent $event): void
