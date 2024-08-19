@@ -22,6 +22,8 @@
         <whitelist>
             <directory>./</directory>
             <exclude>
+                <directory>./config</directory>
+                <directory>./tests/UnitTests/</directory>
                 <directory>./vendor</directory>
             </exclude>
         </whitelist>

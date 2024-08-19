@@ -5,7 +5,7 @@
   </php>
   <testsuites>
     <testsuite name="Symfony Messenger Idempotent Consumer Test Suite">
-      <directory>./tests/</directory>
+        <directory>./tests/UnitTests/</directory>
     </testsuite>
   </testsuites>
   <source>
@@ -13,9 +13,9 @@
       <directory>./</directory>
     </include>
     <exclude>
-      <directory>./config</directory>
-      <directory>./tests</directory>
-      <directory>./vendor</directory>
+        <directory>./config</directory>
+        <directory>./tests/UnitTests/</directory>
+        <directory>./vendor</directory>
     </exclude>
   </source>
 </phpunit>
