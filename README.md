@@ -40,6 +40,12 @@ parameters:
 
 if you configure both in first order it will check transport then message.
 
+3. you can implement your own voter and replace default voter
+`MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Voter\WantToCheckMessageVoter`
+```yaml
+parameters:
+    mms.idempotent_consumer.messenger_bundle.default_message_voter: id_of_your_voter_service
+```
 ## Support
 
 :hugs: Please consider contributing if you feel you can improve this package, otherwise submit an issue via the GitHub page and include as much

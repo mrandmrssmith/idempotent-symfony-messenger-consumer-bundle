@@ -2,7 +2,6 @@
 
 namespace MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\DependencyInjection;
 
-use App\Kernel;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -15,7 +14,7 @@ final class MmsIdempotentConsumerSymfonyMessengerExtension extends Extension
         $configuration = new Configuration();
         $this->processConfiguration($configuration, $configs);
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources'));
         $loader->load('services.yaml');
     }
 }

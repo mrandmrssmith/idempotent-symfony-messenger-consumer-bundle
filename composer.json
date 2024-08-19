@@ -19,7 +19,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "MrAndMrsSmith\\IdempotentConsumerSymfonyMessengerBundle\\": "/src"
+            "MrAndMrsSmith\\IdempotentConsumerSymfonyMessengerBundle\\": "./src",
+            "Tests\\UnitTests\\" : "./tests/UnitTests"
         }
     },
     "config": {

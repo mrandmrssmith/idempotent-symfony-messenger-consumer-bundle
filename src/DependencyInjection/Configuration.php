@@ -1,6 +1,5 @@
 <?php
 
-
 namespace MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
