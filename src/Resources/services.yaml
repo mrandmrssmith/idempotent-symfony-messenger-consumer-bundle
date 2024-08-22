@@ -21,14 +21,14 @@ services:
             $wantToCheckMessageVoter: '%mms.idempotent_consumer.messenger_bundle.default_message_voter%'
 
     mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.transport:
-        class: MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Voter\WantToCheckMessageByTransportAndMessageVoter
+        class: MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Voter\WantToCheckMessageByTransportVoter
         autoconfigure: true
         autowire: true
         arguments:
             $supportedTransports: '%mms.idempotent_consumer.messenger_bundle.supported_transports%'
 
     mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.message:
-        class: MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Voter\WantToCheckMessageByTransportAndMessageVoter
+        class: MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Voter\WantToCheckMessageByMessageVoter
         autoconfigure: true
         autowire: true
         arguments:
