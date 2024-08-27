@@ -23,6 +23,5 @@ final class MmsIdempotentConsumerSymfonyMessengerExtension extends Extension
         $messageVoterDefinition = $container
             ->getDefinition('mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.message');
         $messageVoterDefinition->setArgument('$supportedMessages', $config['supported_messages']);
-        $container->setParameter('mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.service', $config['voter']);
     }
 }

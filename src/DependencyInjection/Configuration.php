@@ -21,9 +21,6 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue([])
                     ->prototype('scalar')->end()
             ->end()
-                ->scalarNode('voter')
-                ->defaultValue('mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.transport_and_message')
-                ->end()
             ->end();
 
         return $treeBuilder;

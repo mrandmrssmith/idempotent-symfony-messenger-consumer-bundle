@@ -18,10 +18,5 @@ class IdempotentConsumerSymfonyMessengerPass implements CompilerPassInterface
             $mappedReceivers[explode('.', $id)[2]] = new Reference($id);
         }
         $subscriberDefinition->setArgument('$receivers', $mappedReceivers);
-
-        $subscriberDefinition->setArgument(
-            '$wantToCheckMessageVoter',
-            $container->getParameter('mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.service')
-        );
     }
 }
