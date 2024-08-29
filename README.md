@@ -22,24 +22,31 @@ By default it will try check for all messages.
 
 If you want, you can restrict the action so that it checks only messages from a particular transport or messages that are instances of a class/interface
 
-To do this you need overwrite value of some parameters.
+To do this you need overwrite value of some properties in bundle config yaml file mms_idempotent_consumer_symfony_messenger.yaml.
 1. Configure supported messages
 ```yaml
-parameters:
-    mms.idempotent_consumer.messenger_bundle.supported_messages:
-        - "App\Message\MyMessage"
-        - "App\Message\MyMessageInterface"
+mms_idempotent_consumer_symfony_messenger:
+    supported_messages: 
+        - App\Message\YourMessage
+        - App\Message\YourSecondMessage
+
 ```
 2. Configure supported transports
 ```yaml
-parameters:
-    mms.idempotent_consumer.messenger_bundle.supported_transports:
-        - 'my_transport_name'
-        - 'other_transport_name'
+mms_idempotent_consumer_symfony_messenger:
+    supported_transports: 
+        - your_transport_name
+        - your_second_transport_name
 ```
 
 if you configure both in first order it will check transport then message.
 
+3. you can implement your own voter and replace default voter
+`MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Voter\WantToCheckMessageVoter`
+```yaml
+mms_idempotent_consumer_symfony_messenger:
+    voter: 'your_voter_service_id'
+```
 ## Support
 
 :hugs: Please consider contributing if you feel you can improve this package, otherwise submit an issue via the GitHub page and include as much

@@ -9,9 +9,10 @@
         findUnusedCode="false"
 >
     <projectFiles>
-        <directory name="Serializer" />
+        <directory name="src"/>
         <ignoreFiles>
-            <directory name="vendor" />
+            <directory name="vendor"/>
+            <directory name="src/DependencyInjection"/>
         </ignoreFiles>
     </projectFiles>
 </psalm>

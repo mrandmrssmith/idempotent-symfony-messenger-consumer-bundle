@@ -6,13 +6,12 @@ use MrAndMrsSmith\IdempotentConsumerBundle\Checker\CheckMessageCanBeProcessed;
 use MrAndMrsSmith\IdempotentConsumerBundle\Finalizer\MessageFinalizer;
 use MrAndMrsSmith\IdempotentConsumerBundle\Message\IncomingMessage;
 use MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Factory\IncomingMessageFactory;
+use MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Voter\WantToCheckMessageVoter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
-use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
 
 class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
@@ -29,35 +28,29 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
     /** @var ReceiverInterface[] */
     private $receivers;
 
-    /** @var string[] */
-    private $supportedTransports = [];
-
-    /** @var string[] */
-    private $supportedMessages = [];
+    /** @var WantToCheckMessageVoter */
+    private $wantToCheckMessageVoter;
 
     /**
-     * @param string[] $supportedTransports
-     * @param string[] $supportedMessages
+     * @param ReceiverInterface[] $receivers
      */
     public function __construct(
         CheckMessageCanBeProcessed $checker,
         IncomingMessageFactory $incomingMessageFactory,
         MessageFinalizer $finalizer,
         array $receivers,
-        array $supportedTransports = [],
-        array $supportedMessages = []
+        WantToCheckMessageVoter $wantToCheckMessageVoter
     ) {
         $this->checker = $checker;
         $this->incomingMessageFactory = $incomingMessageFactory;
         $this->finalizer = $finalizer;
         $this->receivers = $receivers;
-        $this->supportedTransports = $supportedTransports;
-        $this->supportedMessages = $supportedMessages;
+        $this->wantToCheckMessageVoter = $wantToCheckMessageVoter;
     }
 
     public function checkIfCanProcessMessage(WorkerMessageReceivedEvent $event): void
     {
-        if (!$this->messageShouldBeChecked($event)) {
+        if (!$this->wantToCheckMessageVoter->vote($event)) {
             return;
         }
         $incomingMessage = $this->getIncomingMessageFromEnvelope($event->getEnvelope());
@@ -71,7 +64,7 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
 
     public function handleMessageHandledEvent(WorkerMessageHandledEvent $event): void
     {
-        if (!$this->messageShouldBeChecked($event)) {
+        if (!$this->wantToCheckMessageVoter->vote($event)) {
             return;
         }
         $incomingMessage = $this->getIncomingMessageFromEnvelope($event->getEnvelope());
@@ -81,7 +74,7 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
 
     public function handleMessageFailedEvent(WorkerMessageFailedEvent $event): void
     {
-        if (!$this->messageShouldBeChecked($event)) {
+        if (!$this->wantToCheckMessageVoter->vote($event)) {
             return;
         }
         $incomingMessage = $this->getIncomingMessageFromEnvelope($event->getEnvelope());
@@ -117,24 +110,5 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
         return $this
             ->incomingMessageFactory
             ->createFromMessengerMessageEnvelope($envelope);
-    }
-
-    private function messageShouldBeChecked(AbstractWorkerMessageEvent $event): bool
-    {
-        if (empty($this->supportedTransports) && empty($this->supportedMessages)) {
-            return true;
-        }
-
-        if (in_array($event->getReceiverName(), $this->supportedTransports)) {
-            return true;
-        }
-
-        foreach ($this->supportedMessages as $supportedMessage) {
-            if ($event->getEnvelope()->getMessage() instanceof $supportedMessage) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

@@ -24,7 +24,7 @@ class IncomingMessageFactory
             $this->serializer->serialize($message, 'json'),
             true
         );
-        $stamps = $envelope->withoutStampsOfType(NonSendableStampInterface::class);
+        $stamps = $envelope->withoutStampsOfType(NonSendableStampInterface::class)->all();
         $headers = json_decode(
             $this->serializer->serialize($stamps, 'json'),
             true

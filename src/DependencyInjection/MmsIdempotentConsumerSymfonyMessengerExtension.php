@@ -2,7 +2,6 @@
 
 namespace MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\DependencyInjection;
 
-use App\Kernel;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -13,9 +12,16 @@ final class MmsIdempotentConsumerSymfonyMessengerExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
-        $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources'));
         $loader->load('services.yaml');
+
+        $transportVoterDefinition = $container
+            ->getDefinition('mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.transport');
+        $transportVoterDefinition->setArgument('$supportedTransports', $config['supported_transports']);
+        $messageVoterDefinition = $container
+            ->getDefinition('mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.message');
+        $messageVoterDefinition->setArgument('$supportedMessages', $config['supported_messages']);
     }
 }

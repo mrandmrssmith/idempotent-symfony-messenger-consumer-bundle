@@ -4,8 +4,8 @@
     <ini name="error_reporting" value="-1"/>
   </php>
   <testsuites>
-    <testsuite name="Symfony Messenger JSON Serializer Test Suite">
-      <directory>./Tests/</directory>
+    <testsuite name="Symfony Messenger Idempotent Consumer Test Suite">
+        <directory>./tests/UnitTests/</directory>
     </testsuite>
   </testsuites>
   <source>
@@ -13,8 +13,9 @@
       <directory>./</directory>
     </include>
     <exclude>
-      <directory>./Tests</directory>
-      <directory>./vendor</directory>
+        <directory>./config</directory>
+        <directory>./tests/UnitTests/</directory>
+        <directory>./vendor</directory>
     </exclude>
   </source>
 </phpunit>

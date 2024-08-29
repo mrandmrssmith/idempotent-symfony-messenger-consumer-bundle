@@ -1,7 +1,3 @@
-parameters:
-    mms.idempotent_consumer.messenger_bundle.supported_messages: []
-    mms.idempotent_consumer.messenger_bundle.supported_transports: []
-
 services:
     MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\:
         resource: '../'
@@ -17,5 +13,24 @@ services:
         autowire: true
         arguments:
             $receivers: []
-            $supportedTransports: '%mms.idempotent_consumer.messenger_bundle.supported_transports%'
-            $supportedMessages: '%mms.idempotent_consumer.messenger_bundle.supported_messages%'
+            $wantToCheckMessageVoter: '@mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.service'
+
+    mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.transport:
+        class: MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Voter\WantToCheckMessageByTransportVoter
+        autoconfigure: true
+        autowire: true
+
+    mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.message:
+        class: MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Voter\WantToCheckMessageByMessageVoter
+        autoconfigure: true
+        autowire: true
+
+    mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.transport_and_message:
+        class: MrAndMrsSmith\IdempotentConsumerSymfonyMessengerBundle\Voter\WantToCheckMessageByTransportAndMessageVoter
+        autoconfigure: true
+        autowire: true
+        arguments:
+            $transportVoter: '@mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.transport'
+            $messageVoter: '@mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.message'
+
+    mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.service: '@mms.idempotent_consumer.messenger_bundle.want_to_check_message_voter.transport_and_message'
