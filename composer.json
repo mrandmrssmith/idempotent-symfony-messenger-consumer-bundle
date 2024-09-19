@@ -9,7 +9,7 @@
         "symfony/messenger": ">=4.4",
         "symfony/serializer": ">=4.4",
         "symfony/property-access": ">=4.4",
-        "mrandmrssmith/idempotent-consumer-bundle": "dev-main"
+        "mrandmrssmith/idempotent-consumer-bundle": "^1.0.0"
     },
     "authors": [
         {
