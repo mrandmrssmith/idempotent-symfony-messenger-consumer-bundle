@@ -31,7 +31,6 @@
         "phpstan/phpstan": "^1.10",
         "phpstan/phpstan-phpunit": "^1.3",
         "phpunit/phpunit": ">=8.5",
-        "roave/security-advisories": "dev-master",
         "symplify/easy-coding-standard": "^12.1",
         "vimeo/psalm": "^4.30||^5.22"
     },
