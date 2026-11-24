@@ -1,0 +1,80 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }} (${{ matrix.dependencies }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Lowest supported versions: PHP 7.4 + Symfony 3.4
+          - php: '7.4'
+            dependencies: lowest
+            phpunit-config: phpunit-8.xml.dist
+          # PHP 7.4 + Symfony 5.4
+          - php: '7.4'
+            dependencies: highest
+            phpunit-config: phpunit-8.xml.dist
+          # PHP 8.1 + Symfony 6.4
+          - php: '8.1'
+            dependencies: highest
+            phpunit-config: phpunit-11.xml.dist
+          # PHP 8.3 + Symfony 7.4
+          - php: '8.3'
+            dependencies: highest
+            phpunit-config: phpunit-11.xml.dist
+            static-analysis: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies (highest)
+        if: matrix.dependencies == 'highest'
+        run: composer update --no-interaction --no-progress --prefer-dist
+
+      - name: Install dependencies (lowest)
+        if: matrix.dependencies == 'lowest'
+        run: composer update --no-interaction --no-progress --prefer-dist --prefer-lowest --prefer-stable
+
+      - name: Show resolved versions
+        run: composer show | grep -E '^(symfony/dependency-injection|phpunit/phpunit) '
+
+      - name: PHPUnit
+        run: vendor/bin/phpunit -c ${{ matrix.phpunit-config }}
+
+      - name: PHPStan
+        if: matrix.static-analysis
+        run: vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress
+
+      - name: Psalm
+        if: matrix.static-analysis
+        run: vendor/bin/psalm -c psalm.xml --no-progress
+
+      - name: PHP compatibility (7.4 - 8.3)
+        if: matrix.static-analysis
+        run: |
+          vendor/bin/phpcs --config-set installed_paths vendor/phpcompatibility/php-compatibility
+          vendor/bin/phpcs -p src tests --standard=PHPCompatibility --runtime-set testVersion 7.4-8.3 --extensions=php
+
+      - name: Security advisories (composer audit)
+        if: matrix.static-analysis
+        run: composer audit --no-interaction
