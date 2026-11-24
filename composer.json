@@ -4,12 +4,12 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": ">=7.2",
+        "php": "^7.4 || ^8.0",
         "ext-json": "*",
-        "symfony/messenger": ">=4.4",
-        "symfony/serializer": ">=4.4",
-        "symfony/property-access": ">=4.4",
-        "mrandmrssmith/idempotent-consumer-bundle": "^1.0.0"
+        "symfony/messenger": "^4.4 || ^5.4 || ^6.4 || ^7.4",
+        "symfony/serializer": "4.4 || ^5.4 || ^6.4 || ^7.4",
+        "symfony/property-access": "4.4 || ^5.4 || ^6.4 || ^7.4",
+        "mrandmrssmith/idempotent-consumer-bundle": "^1.0 || ^2.0"
     },
     "authors": [
         {
