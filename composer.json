@@ -35,6 +35,7 @@
         "symplify/easy-coding-standard": "^12.1",
         "vimeo/psalm": "^4.30||^5.22"
     },
+    "prefer-stable": true,
     "repositories": [
         {
             "type": "git",
