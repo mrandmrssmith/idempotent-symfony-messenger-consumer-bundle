@@ -65,16 +65,6 @@ jobs:
         if: matrix.static-analysis
         run: vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress
 
-      - name: Debug
-        continue-on-error: true
-        run: |
-          set +e
-          php --version
-          vendor/bin/psalm --version
-          composer show | grep -E 'symfony/|vimeo/psalm|nikic/php-parser'
-          php -r 'require "vendor/autoload.php"; var_dump(class_exists(Symfony\Component\DependencyInjection\ContainerBuilder::class));'
-          vendor/bin/psalm --no-cache --php-version=8.3 || true
-
       - name: Psalm
         if: matrix.static-analysis
         run: vendor/bin/psalm -c psalm.xml --no-progress --php-version=${{ matrix.php }}
