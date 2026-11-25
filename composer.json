@@ -29,6 +29,7 @@
     },
     "minimum-stability": "dev",
     "require-dev": {
+        "phpcompatibility/php-compatibility": "^9.3",
         "phpstan/phpstan": "^1.10",
         "phpstan/phpstan-phpunit": "^1.3",
         "phpunit/phpunit": ">=8.5",
