@@ -4,12 +4,13 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": ">=7.2",
+        "php": "^7.4 || ^8.0",
         "ext-json": "*",
-        "symfony/messenger": ">=4.4",
-        "symfony/serializer": ">=4.4",
-        "symfony/property-access": ">=4.4",
-        "mrandmrssmith/idempotent-consumer-bundle": "^1.0.0"
+        "symfony/messenger": "^4.4 || ^5.4 || ^6.4 || ^7.4",
+        "symfony/serializer": "4.4 || ^5.4 || ^6.4 || ^7.4",
+        "symfony/property-access": "4.4 || ^5.4 || ^6.4 || ^7.4",
+        "symfony/dependency-injection": "^3.4 || ^4.4 || ^5.4 || ^6.4 || ^7.4",
+        "mrandmrssmith/idempotent-consumer-bundle": "^1.0 || ^2.0"
     },
     "authors": [
         {
@@ -28,13 +29,14 @@
     },
     "minimum-stability": "dev",
     "require-dev": {
+        "phpcompatibility/php-compatibility": "^9.3",
         "phpstan/phpstan": "^1.10",
         "phpstan/phpstan-phpunit": "^1.3",
         "phpunit/phpunit": ">=8.5",
-        "roave/security-advisories": "dev-master",
         "symplify/easy-coding-standard": "^12.1",
         "vimeo/psalm": "^4.30||^5.22"
     },
+    "prefer-stable": true,
     "repositories": [
         {
             "type": "git",

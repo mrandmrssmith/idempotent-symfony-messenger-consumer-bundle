@@ -87,7 +87,7 @@ class SymfonyMessengerEventSubscriber implements EventSubscriberInterface
         $this->finalizer->finalizeFailure($incomingMessage);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             WorkerMessageReceivedEvent::class => [

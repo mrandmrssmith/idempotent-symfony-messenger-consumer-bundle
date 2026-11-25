@@ -8,6 +8,15 @@ You can you package `mrandmrssmith/idempotent-consumer-doctrine-persistence-bund
 
 It uses messenger events to handle incoming and processed or failed messages.
 
+## Requirements
+
+| PHP          | Symfony                      |
+|--------------|------------------------------|
+| 7.4, 8.0–8.3 | 3.4, 4.4, 5.4, 6.4, 7.4      |
+
+Tested in CI with: PHP 7.4 + Symfony 3.4 (lowest), PHP 7.4 + Symfony 5.4,
+PHP 8.1 + Symfony 6.4 and PHP 8.3 + Symfony 7.4.
+
 ## Installation
 
 Add this package to your project
@@ -16,11 +25,11 @@ composer require mrandmrssmith/idempotent-symfony-messenger-consumer-bundle
 ```
 
 ## Usage
-You have to remember about implement IdempotentKeyResolver. Interface is in core bundle `mrandmrssmith/idempotent-consumer-bundle`
+You have to remember to implement IdempotentKeyResolver. Interface is in core bundle `mrandmrssmith/idempotent-consumer-bundle`
 
-By default it will try check for all messages.
+By default, it will try check for all messages.
 
-If you want, you can restrict the action so that it checks only messages from a particular transport or messages that are instances of a class/interface
+If you want, you can restrict the action so that it only checks messages from a particular transport or messages that are instances of a class/interface
 
 To do this you need overwrite value of some properties in bundle config yaml file mms_idempotent_consumer_symfony_messenger.yaml.
 1. Configure supported messages
